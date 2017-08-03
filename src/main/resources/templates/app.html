@@ -1,0 +1,18 @@
+<h1 th:text="${appId}"></h1>
+<div id="tt" class="easyui-tabs">
+  <div title="info" style="display:none;" th:attr="href=${'/apps/'+appId+'/info'}"/>
+  <div title="health" style="display:none;" th:attr="href=${'/apps/'+appId+'/health'}"/>
+  <div title="env" style="display:none;" th:attr="href=${'/apps/'+appId+'/env'}"/>
+  <div title="mappings" style="display:none;" th:attr="href=${'/apps/'+appId+'/mappings'}"/>
+  <div title="beans" style="display:none;" th:attr="href=${'/apps/'+appId+'/beans'}"/>
+  <div title="metrics" style="display:none;" th:attr="href=${'/apps/'+appId+'/metrics'}"/>
+  <div title="configprops" style="display:none;" th:attr="href=${'/apps/'+appId+'/configprops'}"/>
+  <div title="autoconfig" style="display:none;" th:attr="href=${'/apps/'+appId+'/autoconfig'}"/>
+  <div title="auditevents" style="display:none;" th:attr="href=${'/apps/'+appId+'/auditevents'}"/>
+  <div title="loggers" style="display:none;" th:attr="href=${'/apps/'+appId+'/loggers'}"/>
+  <div title="trace" style="display:none;" th:attr="href=${'/apps/'+appId+'/trace'}"/>
+  <div title="dump" style="display:none;" th:attr="href=${'/apps/'+appId+'/dump'}"/>
+</div>
+<div>
+  <a href="javascript:;" class="easyui-linkbutton" onclick="javascript:openTab();">在新窗口打开</a>
+</div>

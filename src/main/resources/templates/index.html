@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>Actuator-Dashboard</title>
+  <link rel="stylesheet" type="text/css" href="/themes/bootstrap/easyui.css"/>
+  <link rel="stylesheet" type="text/css" href="/themes/icon.css"/>
+  <script src="/jquery.min.js" type="application/javascript"></script>
+  <script src="/jquery.easyui.min.js" type="application/javascript"></script>
+  <script src="/locale/easyui-lang-zh_CN.js" type="application/javascript"></script>
+  <style>
+    textarea {
+      width: 98%;
+      resize: none;
+      height: 600px;
+    }
+  </style>
+  <script>
+    var openTab=function(){
+      window.open($('#tt').tabs('getSelected').attr('href'));
+    }
+  </script>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'west',title:'目录',split:true" style="width:300px;">
+  <ul class="easyui-tree" data-options="url:'/apps',method:'get',onClick:function(node){
+    $('#center').panel('refresh','/apps/'+node.text);
+  }"></ul>
+</div>
+<div id="center" data-options="region:'center'" style="padding:5px;background:#eee;"></div>
+<div data-options="region:'east',title:'监控',split:true" style="width:100px;">
+
+</div>
+</body>
+</html>
