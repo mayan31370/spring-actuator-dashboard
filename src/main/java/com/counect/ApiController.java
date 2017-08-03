@@ -26,15 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiController {
 
   @Value("${actuator-dashboard.apps}")
-  private String APPS_IN_STRING;
+  private String appsInString;
   @Value("${actuator-dashboard.actuator.username}")
-  private String USERNAME;
+  private String username;
   @Value("${actuator-dashboard.actuator.password}")
-  private String PASSWORD;
+  private String password;
 
   private List<TreeNode> getApps() {
     List<TreeNode> result = new ArrayList<>();
-    for (String group : StringUtils.split(APPS_IN_STRING, "|")) {
+    for (String group : StringUtils.split(appsInString, "|")) {
       String groupName = StringUtils.substringBefore(group, ":");
       List<String> apps = Arrays
           .asList(StringUtils.split(StringUtils.substringAfter(group, ":"), ","));
@@ -53,7 +53,7 @@ public class ApiController {
       throws IOException {
     BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(new AuthScope(app, 8080),
-        new UsernamePasswordCredentials(USERNAME, PASSWORD));
+        new UsernamePasswordCredentials(username, password));
     HttpClient client = HttpClientBuilder.create()
         .setDefaultCredentialsProvider(credentialsProvider).build();
     HttpGet method = new HttpGet("http://" + app + ":8080/" + point);
@@ -63,15 +63,47 @@ public class ApiController {
 
   class TreeNode {
 
-    public String text;
-    public String iconCls = "icon-none";
-    public String state = "open";
-    public List<TreeNode> children;
+    private String text;
+    private String iconCls = "icon-none";
+    private String state = "open";
+    private List<TreeNode> children;
 
     public TreeNode(String text, List<String> children) {
       this.text = text;
       this.children = children == null ? null
           : children.stream().map(name -> new TreeNode(name, null)).collect(Collectors.toList());
+    }
+
+    public String getText() {
+      return text;
+    }
+
+    public void setText(String text) {
+      this.text = text;
+    }
+
+    public String getIconCls() {
+      return iconCls;
+    }
+
+    public void setIconCls(String iconCls) {
+      this.iconCls = iconCls;
+    }
+
+    public String getState() {
+      return state;
+    }
+
+    public void setState(String state) {
+      this.state = state;
+    }
+
+    public List<TreeNode> getChildren() {
+      return children;
+    }
+
+    public void setChildren(List<TreeNode> children) {
+      this.children = children;
     }
   }
 }

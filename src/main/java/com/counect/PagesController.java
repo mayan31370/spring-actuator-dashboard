@@ -17,8 +17,8 @@ public class PagesController {
   }
 
   @GetMapping("/apps/{appId}")
-  public String app(@PathVariable("appId") String appId,Model model) {
-    model.addAttribute("appId",appId);
+  public String app(@PathVariable("appId") String appId, Model model) {
+    model.addAttribute("appId", appId);
     return "app";
   }
 }
