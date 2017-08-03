@@ -17,7 +17,6 @@ target/
 .mvn/
 mvnw.cmd
 mvnw
-src/main/resources/application.properties
 
 ### NetBeans ###
 nbproject/private/
