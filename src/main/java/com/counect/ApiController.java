@@ -96,7 +96,7 @@ public class ApiController {
       case POST:
         HttpPost httpPost = new HttpPost("http://" + app + ":8080/" + point);
         if (StringUtils.isNotBlank(body)) {
-          httpPost.setEntity(new StringEntity(body));
+          httpPost.setEntity(new StringEntity(String.format("{\"configuredLevel\":\"%s\"}",body)));
         }
         requestMethod = httpPost;
         break;
