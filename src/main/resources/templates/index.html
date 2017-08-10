@@ -23,7 +23,7 @@
       $.messager.confirm('提示', '确定要执行该操作吗？', function (r) {
         if (r) {
           $.post(url, function (data) {
-            $.messager.alert('提示', '执行' + data == 'false' ? '失败' : '成功', 'info');
+            $.messager.alert('提示', data, 'info');
           });
         }
       });
@@ -46,7 +46,7 @@
                 data: eval('({"configuredLevel":"' + level + '"})'),
                 dataType: "json",
                 success: function (data) {
-                  $.messager.alert('提示', '执行' + data == 'false' ? '失败' : '成功', 'info');
+                  $.messager.alert('提示', data, 'info');
                 },
                 error: function (message) {
                   $.messager.alert('提示', '失败', 'info');

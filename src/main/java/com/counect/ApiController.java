@@ -68,16 +68,16 @@ public class ApiController {
   }
 
   @PostMapping("/apps/{app}/{point}")
-  public boolean postPoint(@PathVariable("app") String app, @PathVariable("point") String point)
+  public String postPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
-    return BooleanUtils.toBoolean(request(app, point, RequestMethod.POST));
+    return request(app, point, RequestMethod.POST);
   }
 
   @PostMapping("/apps/{app}/{point}/{detail}")
-  public boolean postPointWithDetail(@PathVariable("app") String app,
+  public String postPointWithDetail(@PathVariable("app") String app,
       @PathVariable("point") String point, @PathVariable("detail") String detail)
       throws IOException {
-    return BooleanUtils.toBoolean(request(app, point + "/" + detail, RequestMethod.POST));
+    return request(app, point + "/" + detail, RequestMethod.POST);
   }
 
   private String request(String app, String point, RequestMethod method) throws IOException {
