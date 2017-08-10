@@ -40,7 +40,7 @@
         if (name) {
           $.messager.prompt('请输入', '日志级别: ', function (level) {
             if (level) {
-              $.post(url + name, {configuredLevel: level}, function (data) {
+              $.post(url + name, {body: level}, function (data) {
                 $.messager.alert('提示', data, 'info');
               });
             }
