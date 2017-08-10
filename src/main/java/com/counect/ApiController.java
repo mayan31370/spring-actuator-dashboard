@@ -2,6 +2,7 @@ package com.counect;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -37,6 +39,18 @@ public class ApiController {
   private String username;
   @Value("${actuator-dashboard.actuator.password}")
   private String password;
+
+  public static void main(String[] args) throws IOException {
+    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(new AuthScope("localhost", 10000),
+        new UsernamePasswordCredentials("a", "a"));
+    HttpClient client = HttpClientBuilder.create()
+        .setDefaultCredentialsProvider(credentialsProvider).build();
+    HttpPost httpPost = new HttpPost("http://localhost:10000/loggers/root");
+    httpPost.setEntity(new StringEntity("{\"configuredLevel\":\"debug\"}",ContentType.APPLICATION_JSON));
+    InputStream stream = client.execute(httpPost).getEntity().getContent();
+    System.out.println(IOUtils.toString(stream, "utf8"));
+  }
 
   private List<TreeNode> getApps() {
     List<TreeNode> result = new ArrayList<>();
@@ -96,8 +110,7 @@ public class ApiController {
       case POST:
         HttpPost httpPost = new HttpPost("http://" + app + ":8080/" + point);
         if (StringUtils.isNotBlank(body)) {
-          httpPost.setEntity(new StringEntity(String.format("{\"configuredLevel\":\"%s\"}", body),
-              ContentType.APPLICATION_JSON));
+          httpPost.setEntity(new StringEntity(String.format("{\"configuredLevel\":\"%s\"}", body),ContentType.APPLICATION_JSON));
         }
         requestMethod = httpPost;
         break;
