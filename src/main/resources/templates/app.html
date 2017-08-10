@@ -2,6 +2,8 @@
 <div id="tt" class="easyui-tabs">
   <div title="info" style="display:none;" th:attr="href=${'/apps/'+appId+'/info'}"/>
   <div title="health" style="display:none;" th:attr="href=${'/apps/'+appId+'/health'}"/>
+  <div title="archaius" style="display:none;" th:attr="href=${'/apps/'+appId+'/archaius'}"/>
+  <div title="features" style="display:none;" th:attr="href=${'/apps/'+appId+'/features'}"/>
   <div title="env" style="display:none;" th:attr="href=${'/apps/'+appId+'/env'}"/>
   <div title="mappings" style="display:none;" th:attr="href=${'/apps/'+appId+'/mappings'}"/>
   <div title="beans" style="display:none;" th:attr="href=${'/apps/'+appId+'/beans'}"/>
@@ -13,6 +15,31 @@
   <div title="trace" style="display:none;" th:attr="href=${'/apps/'+appId+'/trace'}"/>
   <div title="dump" style="display:none;" th:attr="href=${'/apps/'+appId+'/dump'}"/>
 </div>
-<div>
-  <a href="javascript:;" class="easyui-linkbutton" onclick="javascript:openTab();">在新窗口打开</a>
+<div style="padding: 10px; background-color: #4cae4c;">
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     onclick="javascript:openTab();">在新窗口打开</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'getWithName(''/apps/'+appId+'/env/'');'}">env/{name:.*}</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'getWithName(''/apps/'+appId+'/loggers/'');'}">loggers/{name:.*}</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'getWithName(''/apps/'+appId+'/metrics/'');'}">metrics/{name:.*}</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'getWithName(''/apps/'+appId+'/metrics/'');'}">metrics/{name:.*}</a>
+</div>
+<div style="padding: 10px; background-color: #ffab3f;">
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'post(''/apps/'+appId+'/env'');'}">刷新系统变量</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'post(''/apps/'+appId+'/refresh'');'}">刷新配置</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'postLoggers(''/apps/'+appId+'/loggers/'');'}">设置日志级别</a>
+</div>
+<div style="padding: 10px; background-color: #d84f4b;">
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'post(''/apps/'+appId+'/pause'');'}">暂停服务</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'post(''/apps/'+appId+'/resume'');'}">恢复服务</a>
+  <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
+     th:attr="onclick=${'post(''/apps/'+appId+'/restart'');'}">重启服务</a>
 </div>
