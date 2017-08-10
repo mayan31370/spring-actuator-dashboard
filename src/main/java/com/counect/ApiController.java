@@ -51,7 +51,7 @@ public class ApiController {
     return getApps();
   }
 
-  @GetMapping("/apps/{app}/{point}")
+  @GetMapping("/apps/{app}/{point:.*?}")
   public String getPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
     BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -64,7 +64,7 @@ public class ApiController {
     return IOUtils.toString(stream, "utf8");
   }
 
-  @PostMapping("/apps/{app}/{point}")
+  @PostMapping("/apps/{app}/{point:.*?}")
   public boolean postPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
     BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
