@@ -40,18 +40,6 @@ public class ApiController {
   @Value("${actuator-dashboard.actuator.password}")
   private String password;
 
-  public static void main(String[] args) throws IOException {
-    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(new AuthScope("localhost", 10000),
-        new UsernamePasswordCredentials("a", "a"));
-    HttpClient client = HttpClientBuilder.create()
-        .setDefaultCredentialsProvider(credentialsProvider).build();
-    HttpPost httpPost = new HttpPost("http://localhost:10000/loggers/root");
-    httpPost.setEntity(new StringEntity("{\"configuredLevel\":\"debug\"}",ContentType.APPLICATION_JSON));
-    InputStream stream = client.execute(httpPost).getEntity().getContent();
-    System.out.println(IOUtils.toString(stream, "utf8"));
-  }
-
   private List<TreeNode> getApps() {
     List<TreeNode> result = new ArrayList<>();
     for (String group : StringUtils.split(appsInString, "|")) {
