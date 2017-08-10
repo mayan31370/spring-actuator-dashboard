@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -15,6 +14,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +56,7 @@ public class ApiController {
   @GetMapping("/apps/{app}/{point}")
   public String getPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
-    return request(app, point, RequestMethod.GET);
+    return request(app, point, RequestMethod.GET, null);
   }
 
 
@@ -64,23 +64,25 @@ public class ApiController {
   public String getPointWithDetail(@PathVariable("app") String app,
       @PathVariable("point") String point, @PathVariable("detail") String detail)
       throws IOException {
-    return request(app, point + "/" + detail, RequestMethod.GET);
+    return request(app, point + "/" + detail, RequestMethod.GET, null);
   }
 
   @PostMapping("/apps/{app}/{point}")
-  public String postPoint(@PathVariable("app") String app, @PathVariable("point") String point)
+  public String postPoint(@PathVariable("app") String app, @PathVariable("point") String point,
+      String level)
       throws IOException {
-    return request(app, point, RequestMethod.POST);
+    return request(app, point, RequestMethod.POST, level);
   }
 
   @PostMapping("/apps/{app}/{point}/{detail}")
   public String postPointWithDetail(@PathVariable("app") String app,
       @PathVariable("point") String point, @PathVariable("detail") String detail)
       throws IOException {
-    return request(app, point + "/" + detail, RequestMethod.POST);
+    return request(app, point + "/" + detail, RequestMethod.POST, null);
   }
 
-  private String request(String app, String point, RequestMethod method) throws IOException {
+  private String request(String app, String point, RequestMethod method, String body)
+      throws IOException {
     BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(new AuthScope(app, 8080),
         new UsernamePasswordCredentials(username, password));
@@ -92,7 +94,11 @@ public class ApiController {
         requestMethod = new HttpGet("http://" + app + ":8080/" + point);
         break;
       case POST:
-        requestMethod = new HttpPost("http://" + app + ":8080/" + point);
+        HttpPost httpPost = new HttpPost("http://" + app + ":8080/" + point);
+        if (StringUtils.isNotBlank(body)) {
+          httpPost.setEntity(new StringEntity(body));
+        }
+        requestMethod = httpPost;
         break;
       default:
         throw new RuntimeException("Not supported.");

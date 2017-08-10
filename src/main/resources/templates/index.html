@@ -18,7 +18,7 @@
   <script>
     var openTab = function () {
       window.open($('#tt').tabs('getSelected').attr('href'));
-    }
+    };
     var post = function (url) {
       $.messager.confirm('提示', '确定要执行该操作吗？', function (r) {
         if (r) {
@@ -27,36 +27,27 @@
           });
         }
       });
-    }
+    };
     var getWithName = function (url) {
       $.messager.prompt('请输入', 'name: ', function (r) {
         if (r) {
           window.open(url + r);
         }
       });
-    }
+    };
     var postLoggers = function (url) {
       $.messager.prompt('请输入', '日志名称: ', function (name) {
         if (name) {
           $.messager.prompt('请输入', '日志级别: ', function (level) {
             if (level) {
-              $.ajax({
-                type: "POST",
-                url: url + name,
-                data: eval('({"configuredLevel":"' + level + '"})'),
-                dataType: "json",
-                success: function (data) {
-                  $.messager.alert('提示', data, 'info');
-                },
-                error: function (message) {
-                  $.messager.alert('提示', '失败', 'info');
-                }
+              $.post(url, {configuredLevel: level}, function (data) {
+                $.messager.alert('提示', data, 'info');
               });
             }
           });
         }
       });
-    }
+    };
   </script>
 </head>
 <body class="easyui-layout">
