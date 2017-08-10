@@ -14,12 +14,14 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -54,55 +56,49 @@ public class ApiController {
   @GetMapping("/apps/{app}/{point}")
   public String getPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
-    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(new AuthScope(app, 8080),
-        new UsernamePasswordCredentials(username, password));
-    HttpClient client = HttpClientBuilder.create()
-        .setDefaultCredentialsProvider(credentialsProvider).build();
-    HttpGet method = new HttpGet("http://" + app + ":8080/" + point);
-    InputStream stream = client.execute(method).getEntity().getContent();
-    return IOUtils.toString(stream, "utf8");
+    return request(app, point, RequestMethod.GET);
   }
+
 
   @GetMapping("/apps/{app}/{point}/{detail}")
   public String getPointWithDetail(@PathVariable("app") String app,
       @PathVariable("point") String point, @PathVariable("detail") String detail)
       throws IOException {
-    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(new AuthScope(app, 8080),
-        new UsernamePasswordCredentials(username, password));
-    HttpClient client = HttpClientBuilder.create()
-        .setDefaultCredentialsProvider(credentialsProvider).build();
-    HttpGet method = new HttpGet("http://" + app + ":8080/" + point + "/" + detail);
-    InputStream stream = client.execute(method).getEntity().getContent();
-    return IOUtils.toString(stream, "utf8");
+    return request(app, point + "/" + detail, RequestMethod.GET);
   }
 
   @PostMapping("/apps/{app}/{point}")
   public boolean postPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
-    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(new AuthScope(app, 8080),
-        new UsernamePasswordCredentials(username, password));
-    HttpClient client = HttpClientBuilder.create()
-        .setDefaultCredentialsProvider(credentialsProvider).build();
-    HttpPost method = new HttpPost("http://" + app + ":8080/" + point);
-    InputStream stream = client.execute(method).getEntity().getContent();
-    return BooleanUtils.toBoolean(IOUtils.toString(stream, "utf8"));
+    return BooleanUtils.toBoolean(request(app, point, RequestMethod.POST));
   }
 
   @PostMapping("/apps/{app}/{point}/{detail}")
   public boolean postPointWithDetail(@PathVariable("app") String app,
       @PathVariable("point") String point, @PathVariable("detail") String detail)
       throws IOException {
+    return BooleanUtils.toBoolean(request(app, point + "/" + detail, RequestMethod.POST));
+  }
+
+  private String request(String app, String point, RequestMethod method) throws IOException {
     BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(new AuthScope(app, 8080),
         new UsernamePasswordCredentials(username, password));
     HttpClient client = HttpClientBuilder.create()
         .setDefaultCredentialsProvider(credentialsProvider).build();
-    HttpPost method = new HttpPost("http://" + app + ":8080/" + point + "/" + detail);
-    InputStream stream = client.execute(method).getEntity().getContent();
-    return BooleanUtils.toBoolean(IOUtils.toString(stream, "utf8"));
+    HttpRequestBase requestMethod;
+    switch (method) {
+      case GET:
+        requestMethod = new HttpGet("http://" + app + ":8080/" + point);
+        break;
+      case POST:
+        requestMethod = new HttpPost("http://" + app + ":8080/" + point);
+        break;
+      default:
+        throw new RuntimeException("Not supported.");
+    }
+    InputStream stream = client.execute(requestMethod).getEntity().getContent();
+    return IOUtils.toString(stream, "utf8");
   }
 
   class TreeNode {
