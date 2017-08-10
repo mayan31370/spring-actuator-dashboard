@@ -14,6 +14,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -59,7 +60,6 @@ public class ApiController {
     return request(app, point, RequestMethod.GET, null);
   }
 
-
   @GetMapping("/apps/{app}/{point}/{detail}")
   public String getPointWithDetail(@PathVariable("app") String app,
       @PathVariable("point") String point, @PathVariable("detail") String detail)
@@ -96,7 +96,8 @@ public class ApiController {
       case POST:
         HttpPost httpPost = new HttpPost("http://" + app + ":8080/" + point);
         if (StringUtils.isNotBlank(body)) {
-          httpPost.setEntity(new StringEntity(String.format("{\"configuredLevel\":\"%s\"}",body)));
+          httpPost.setEntity(new StringEntity(String.format("{\"configuredLevel\":\"%s\"}", body),
+              ContentType.APPLICATION_JSON));
         }
         requestMethod = httpPost;
         break;
