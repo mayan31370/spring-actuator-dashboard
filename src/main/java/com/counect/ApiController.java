@@ -51,7 +51,7 @@ public class ApiController {
     return getApps();
   }
 
-  @GetMapping("/apps/{app}/{point:.*?}")
+  @GetMapping("/apps/{app}/{point}")
   public String getPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
     BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -64,7 +64,21 @@ public class ApiController {
     return IOUtils.toString(stream, "utf8");
   }
 
-  @PostMapping("/apps/{app}/{point:.*?}")
+  @GetMapping("/apps/{app}/{point}/{detail}")
+  public String getPointWithDetail(@PathVariable("app") String app,
+      @PathVariable("point") String point, @PathVariable("detail") String detail)
+      throws IOException {
+    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(new AuthScope(app, 8080),
+        new UsernamePasswordCredentials(username, password));
+    HttpClient client = HttpClientBuilder.create()
+        .setDefaultCredentialsProvider(credentialsProvider).build();
+    HttpGet method = new HttpGet("http://" + app + ":8080/" + point + "/" + detail);
+    InputStream stream = client.execute(method).getEntity().getContent();
+    return IOUtils.toString(stream, "utf8");
+  }
+
+  @PostMapping("/apps/{app}/{point}")
   public boolean postPoint(@PathVariable("app") String app, @PathVariable("point") String point)
       throws IOException {
     BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
@@ -73,6 +87,20 @@ public class ApiController {
     HttpClient client = HttpClientBuilder.create()
         .setDefaultCredentialsProvider(credentialsProvider).build();
     HttpPost method = new HttpPost("http://" + app + ":8080/" + point);
+    InputStream stream = client.execute(method).getEntity().getContent();
+    return BooleanUtils.toBoolean(IOUtils.toString(stream, "utf8"));
+  }
+
+  @PostMapping("/apps/{app}/{point}/{detail}")
+  public boolean postPointWithDetail(@PathVariable("app") String app,
+      @PathVariable("point") String point, @PathVariable("detail") String detail)
+      throws IOException {
+    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+    credentialsProvider.setCredentials(new AuthScope(app, 8080),
+        new UsernamePasswordCredentials(username, password));
+    HttpClient client = HttpClientBuilder.create()
+        .setDefaultCredentialsProvider(credentialsProvider).build();
+    HttpPost method = new HttpPost("http://" + app + ":8080/" + point + "/" + detail);
     InputStream stream = client.execute(method).getEntity().getContent();
     return BooleanUtils.toBoolean(IOUtils.toString(stream, "utf8"));
   }
