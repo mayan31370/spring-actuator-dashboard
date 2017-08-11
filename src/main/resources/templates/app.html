@@ -37,9 +37,9 @@
 </div>
 <div style="padding: 10px; background-color: #d84f4b;">
   <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
-     th:attr="onclick=${'post(''/apps/'+appId+'/pause'');'}">暂停服务</a>
+     th:attr="onclick=${'postPauseAndResume(''/apps/'+appId+'/pause'');'}">暂停服务</a>
   <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
-     th:attr="onclick=${'post(''/apps/'+appId+'/resume'');'}">恢复服务</a>
+     th:attr="onclick=${'postPauseAndResume(''/apps/'+appId+'/resume'');'}">恢复服务</a>
   <a style="margin-right: 10px;" href="javascript:;" class="easyui-linkbutton"
      th:attr="onclick=${'post(''/apps/'+appId+'/restart'');'}">重启服务</a>
 </div>

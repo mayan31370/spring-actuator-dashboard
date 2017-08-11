@@ -67,17 +67,41 @@ public class ApiController {
     return request(app, point + "/" + detail, RequestMethod.GET, null);
   }
 
-  @PostMapping("/apps/{app}/{point}")
-  public String postPoint(@PathVariable("app") String app, @PathVariable("point") String point)
+  @PostMapping("/apps/{app}/pause")
+  public String postPause(@PathVariable("app") String app)
       throws IOException {
-    return request(app, point, RequestMethod.POST, null);
+    return request(app, "pause", RequestMethod.POST, null);
   }
 
-  @PostMapping("/apps/{app}/{point}/{detail}")
-  public String postPointWithDetail(@PathVariable("app") String app,
-      @PathVariable("point") String point, @PathVariable("detail") String detail, String level)
+  @PostMapping("/apps/{app}/resume")
+  public String postResume(@PathVariable("app") String app)
       throws IOException {
-    return request(app, point + "/" + detail, RequestMethod.POST, level);
+    return request(app, "resume", RequestMethod.POST, null);
+  }
+
+  @PostMapping("/apps/{app}/restart")
+  public String postRestart(@PathVariable("app") String app)
+      throws IOException {
+    return request(app, "restart", RequestMethod.POST, null);
+  }
+
+  @PostMapping("/apps/{app}/env")
+  public String postEnv(@PathVariable("app") String app)
+      throws IOException {
+    return request(app, "env", RequestMethod.POST, null);
+  }
+
+  @PostMapping("/apps/{app}/refresh")
+  public String postRefresh(@PathVariable("app") String app)
+      throws IOException {
+    return request(app, "refresh", RequestMethod.POST, null);
+  }
+
+  @PostMapping("/apps/{app}/loggers/{name}")
+  public String postLogger(@PathVariable("app") String app,
+      @PathVariable("name") String name, String level)
+      throws IOException {
+    return request(app, "loggers/" + name, RequestMethod.POST, level);
   }
 
   private String request(String app, String point, RequestMethod method, String body)
