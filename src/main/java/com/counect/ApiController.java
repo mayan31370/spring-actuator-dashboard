@@ -60,7 +60,7 @@ public class ApiController {
     return request(app, point, RequestMethod.GET, null);
   }
 
-  @GetMapping("/apps/{app}/{point}/{detail}")
+  @GetMapping("/apps/{app}/{point}/{detail:.*?}")
   public String getPointWithDetail(@PathVariable("app") String app,
       @PathVariable("point") String point, @PathVariable("detail") String detail)
       throws IOException {
@@ -97,7 +97,7 @@ public class ApiController {
     return request(app, "refresh", RequestMethod.POST, null);
   }
 
-  @PostMapping("/apps/{app}/loggers/{name}")
+  @PostMapping("/apps/{app}/loggers/{name:.*?}")
   public String postLogger(@PathVariable("app") String app,
       @PathVariable("name") String name, String level)
       throws IOException {
