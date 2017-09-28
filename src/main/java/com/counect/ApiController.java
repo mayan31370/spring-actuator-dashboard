@@ -40,17 +40,13 @@ public class ApiController {
 
   @Value("${actuator-dashboard.hosts}")
   private String hostsInString;
-  @Value("${actuator-dashboard.actuator.username}")
-  private String username;
-  @Value("${actuator-dashboard.actuator.password}")
-  private String password;
 
   private List<TreeNode> getApps() throws IOException, ParserConfigurationException, SAXException {
-    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpClient client = HttpClientBuilder.create().build();
     List<TreeNode> result = new ArrayList<>();
     for (String host : StringUtils.split(hostsInString, ",")) {
       Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-          httpClient.execute(new HttpGet("http://" + host + "/eureka/apps")).getEntity()
+          client.execute(new HttpGet("http://" + host + "/eureka/apps")).getEntity()
               .getContent());
       NodeList nodeList = document.getElementsByTagName("hostName");
       List<String> nodes = new ArrayList<>(nodeList.getLength());
@@ -123,11 +119,7 @@ public class ApiController {
 
   private String request(String app, String point, RequestMethod method, String body)
       throws IOException {
-    BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-    credentialsProvider.setCredentials(new AuthScope(app, 8080),
-        new UsernamePasswordCredentials(username, password));
-    HttpClient client = HttpClientBuilder.create()
-        .setDefaultCredentialsProvider(credentialsProvider).build();
+    HttpClient client = HttpClientBuilder.create().build();
     HttpRequestBase requestMethod;
     switch (method) {
       case GET:
