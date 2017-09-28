@@ -3,9 +3,11 @@ package com.counect;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.auth.AuthScope;
@@ -17,13 +19,18 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Created by mayan on 17-8-2.
@@ -31,27 +38,37 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ApiController {
 
-  @Value("${actuator-dashboard.apps}")
-  private String appsInString;
+  @Value("${actuator-dashboard.hosts}")
+  private String hostsInString;
   @Value("${actuator-dashboard.actuator.username}")
   private String username;
   @Value("${actuator-dashboard.actuator.password}")
   private String password;
 
-  private List<TreeNode> getApps() {
+  private List<TreeNode> getApps() throws IOException, ParserConfigurationException, SAXException {
+    CloseableHttpClient httpClient = HttpClients.createDefault();
     List<TreeNode> result = new ArrayList<>();
-    for (String group : StringUtils.split(appsInString, "|")) {
-      String groupName = StringUtils.substringBefore(group, ":");
-      List<String> apps = Arrays
-          .asList(StringUtils.split(StringUtils.substringAfter(group, ":"), ","));
-      result.add(new TreeNode(groupName, apps));
+    for (String host : StringUtils.split(hostsInString, ",")) {
+      Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+          httpClient.execute(new HttpGet("http://" + host + "/eureka/apps")).getEntity()
+              .getContent());
+      NodeList nodeList = document.getElementsByTagName("hostName");
+      List<String> nodes = new ArrayList<>(nodeList.getLength());
+      for (int i = 0; i < nodeList.getLength(); i++) {
+        nodes.add(nodeList.item(i).getTextContent());
+      }
+      result.add(new TreeNode(host, nodes));
     }
     return result;
   }
 
   @GetMapping("/apps")
   public List<TreeNode> apps() {
-    return getApps();
+    try {
+      return getApps();
+    } catch (IOException | ParserConfigurationException | SAXException e) {
+      return Collections.EMPTY_LIST;
+    }
   }
 
   @GetMapping("/apps/{app}/{point}")
