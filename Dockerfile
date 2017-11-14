@@ -1,8 +1,5 @@
-FROM registry.cn-hangzhou.aliyuncs.com/counect_data/openjdk-8-jre-alpine-fixed-timezone
+FROM mayan31370/openjdk-alpine-with-chinese-timezone:8-jre
 EXPOSE 8080
-ENV ACTUATOR_USERNAME username
-ENV ACTUATOR_PASSWORD password
-ENV ACTUATOR_APPS Group1:App1,App2|Group2:App3
 ENV SERVER_USERNAME user
 ENV SERVER_PASSWORD password
 ENTRYPOINT ["java","-jar","-Dserver.port=8080","/app.jar"]
